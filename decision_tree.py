@@ -12,10 +12,11 @@ def entropy(dataset):
     if len(dataset) == 0:
         return 0
     else:
+        # class_labels = [row[-1] for row in dataset]
         class_labels = []
         for line in dataset:
             if line.strip() != "":
-                row = line.strip().split(" ")
+                row = line.strip().split("\t")
                 class_labels.append(row[-1])
 
         unique_labels, label_counts = np.unique(class_labels, return_counts=True)
