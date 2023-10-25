@@ -1,8 +1,8 @@
 import numpy as np
 
 # Loading the data from the text file
-data_clean = np.loadtxt('clean_dataset.txt')
-data_noisy= np.loadtxt('noisy_dataset.txt')
+data_clean = np.loadtxt('data/clean_dataset.txt')
+data_noisy = np.loadtxt('data/noisy_dataset.txt')
 
 # Printing the loaded data
 print(data_clean)
@@ -98,6 +98,20 @@ def decision_tree_learning(training_dataset, depth):
 # function to find the split value
 def find_split(training_dataset):
     # chooses attribute and value that results in the highest information gain
+
+    data = np.array(training_dataset)
+
+    # split into cols
+    for i in range(len(data)-1):
+        for j in range(len(data[:,i])-1):
+            current_col = data[i:,]
+            sorted = np.sort(current_col)
+    # sort
+
+    # calculate information gain
+
+    # split based on IG
+
     pass
 
 
