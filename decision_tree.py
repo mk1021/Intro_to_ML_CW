@@ -1,11 +1,12 @@
 import numpy as np
 
 # Loading the data from the text file
-data = np.loadtxt('clean_dataset.txt')
-data = np.loadtxt('noisy_dataset.txt')
+data_clean = np.loadtxt('clean_dataset.txt')
+data_noisy= np.loadtxt('noisy_dataset.txt')
 
 # Printing the loaded data
-print(data)
+print(data_clean)
+
 
 def entropy(dataset):
     if len(dataset) == 0:
@@ -17,7 +18,8 @@ def entropy(dataset):
                 row = line.strip().split(" ")
                 class_labels.append(row[-1])
 
-        unique_labels, label_counts = np.unique(class_labels, return_counts=True)
+        unique_labels, label_counts = np.unique(class_labels,
+                                                return_counts=True)
 
         entropy_value = 0.0
 
@@ -32,13 +34,15 @@ def remainder(left_dataset, right_dataset):
     s_left = len(left_dataset)
     s_right = len(right_dataset)
     fraction = s_left / (s_left + s_right)
-    return (fraction * entropy(left_dataset)) + (fraction * entropy(right_dataset))
+    return (fraction * entropy(left_dataset)) + (
+                fraction * entropy(right_dataset))
 
 
 def gain(all_dataset, left_dataset, right_dataset):
     h_all = entropy(all_dataset)
     r = remainder(left_dataset, right_dataset)
     return h_all - r
+
 
 def decision_tree_learning(training_dataset, depth):
     if len(set(training_dataset[:, -1])) == 1:

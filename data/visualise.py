@@ -38,10 +38,12 @@ for i in range(0, 4):
 # # plt.show()
 
 
-fig = plt.figure(figsize = (10,10))
-ax = plt.axes(projection='3d')
-ax.grid()
+# # fig = plt.figure(figsize = (10,10))
+# ax = plt.axes(projection='3d')
+# ax.grid()
+#
+# ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=y, cmap=plt.cm.Set1, edgecolor='k')
+# ax.set_title('3D Scatter Plot')
+# plt.show()
 
-ax.scatter(x[:, 2], x[:, 3], x[:, 4], c=y, cmap=plt.cm.Set1, edgecolor='k')
-ax.set_title('3D Scatter Plot')
-plt.show()
+print(x.shape)
