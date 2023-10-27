@@ -100,12 +100,20 @@ def find_split(training_dataset):
     # chooses attribute and value that results in the highest information gain
 
     data = np.array(training_dataset)
+    col_max_gains = []
 
     # split into cols
     for i in range(len(data)-1):
-        for j in range(len(data[:,i])-1):
-            current_col = data[i:,]
-            sorted = np.sort(current_col)
+        current_col = data[:, i]
+        sorted_col = np.sort(current_col)
+        info_gains = []
+        mid_val = []
+        for j in range(len(sorted_col-1)):
+            mid_val.append(np.median(sorted_col[j:j+2]))
+            g = gain(sorted_col, sorted_col[:j], sorted_col[j:])
+            info_gains.append(g)
+
+
     # sort
 
     # calculate information gain
