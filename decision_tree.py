@@ -189,7 +189,7 @@ def recall_rate(true_labels, predicted_labels):
         tp = np.sum((true_labels == label) & (predicted_labels == label))
         fn = np.sum((true_labels == label) & (predicted_labels != label))
 
-        if (tp + fp) > 0:
+        if (tp + fn) > 0:
             recall[c] = tp / (tp + fn)
         else:
             recall[c] = 0.0
@@ -199,6 +199,9 @@ def recall_rate(true_labels, predicted_labels):
 
 def f1_score(precisions, recalls):
     # 2(precision)(recall)/(precision + recall)
+
+    # precisions = precision_rate(true_labels, predicted_labels)
+    # recalls = recall_rate(true_labels, predicted_labels)
 
     assert len(precisions) == len(recalls)
 
@@ -216,5 +219,46 @@ def f1_score(precisions, recalls):
         f[i] = f_one
 
     return f
+
+
+# def f1_score(true_labels, predicted_labels):
+#     # 2(precision)(recall)/(precision + recall)
+#
+#     unique_class_labels = np.unique(np.concatenate(true_labels, predicted_labels))
+#     precision = np.zeros(len(unique_class_labels))
+#     recall = np.zeros(len(unique_class_labels))
+#
+#     for (c, label) in enumerate(unique_class_labels):
+#         tp = np.sum((true_labels == label) & (predicted_labels == label))
+#         fp = np.sum((true_labels != label) & (predicted_labels == label))
+#         fn = np.sum((true_labels == label) & (predicted_labels != label))
+#
+#         # PRECISION
+#         if (tp + fp) > 0:
+#             precision[c] = tp / (tp + fp)
+#         else:
+#             precision[c] = 0.0
+#
+#         # RECALL
+#         if (tp + fn) > 0:
+#             recall[c] = tp / (tp + fn)
+#         else:
+#             recall[c] = 0.0
+#
+#     # F1 SCORE
+#     assert len(precision) == len(recall)
+#     f = np.zeros(len(precision), )
+#
+#     for i in range(len(precision)):
+#         current_p = precision[i]
+#         current_r = recall[i]
+#         if (current_p + current_r) > 0.0:
+#             f_one = (2*current_p*current_r)/(current_p + current_r)
+#         else:
+#             f_one = 0.0
+#
+#         f[i] = f_one
+#
+#     return f
 
 
