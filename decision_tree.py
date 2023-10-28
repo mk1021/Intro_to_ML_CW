@@ -32,6 +32,7 @@ def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
 # For quick testing
 k_fold_split(10, 2000, rg)
 
+
 def entropy(dataset):
     if len(dataset) == 0:
         return 0
