@@ -1,11 +1,5 @@
 import numpy as np
-
-# Loading the data from the text file
-data_clean = np.loadtxt('data/clean_dataset.txt')
-data_noisy = np.loadtxt('data/noisy_dataset.txt')
-
-# Printing the loaded data
-print(data_clean)
+from numpy.random._generator import default_rng
 
 
 def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
@@ -29,44 +23,42 @@ def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
 
     return split_indices
 
-# For quick testing
-k_fold_split(10, 2000, rg)
 
-
-def entropy(dataset):
-    if len(dataset) == 0:
+def entropy(data_labels):
+    if len(data_labels) == 0:
         return 0
     else:
         # class_labels = [row[-1] for row in dataset]
-        class_labels = []
-        for line in dataset:
-            if line.strip() != "":
-                row = line.strip().split("\t")
-                class_labels.append(row[-1])
+        # class_labels = []
+        # for line in data_labels:
+        #     if line.strip() != "":
+        #         row = line.strip().split("\t")
+        #         class_labels.append(row[-1])
+        # V: unnecessary as we are passing in an array of labels
 
-        unique_labels, label_counts = np.unique(class_labels,
+        unique_labels, label_counts = np.unique(data_labels,
                                                 return_counts=True)
 
         entropy_value = 0.0
 
         for label in label_counts:
-            pk = label / len(dataset)
+            pk = label / len(data_labels)
             entropy_value = pk * np.log2(pk)
 
         return -entropy_value
 
 
-def remainder(left_dataset, right_dataset):
-    s_left = len(left_dataset)
-    s_right = len(right_dataset)
+def remainder(left_data_labels, right_data_labels):
+    s_left = len(left_data_labels)
+    s_right = len(right_data_labels)
     fraction = s_left / (s_left + s_right)
-    return (fraction * entropy(left_dataset)) + (
-                fraction * entropy(right_dataset))
+    return (fraction * entropy(left_data_labels)) + (
+            fraction * entropy(right_data_labels))
 
 
-def gain(all_dataset, left_dataset, right_dataset):
-    h_all = entropy(all_dataset)
-    r = remainder(left_dataset, right_dataset)
+def gain(all_data_labels, left_data_labels, right_data_labels):
+    h_all = entropy(all_data_labels)
+    r = remainder(left_data_labels, right_data_labels)
     return h_all - r
 
 
@@ -102,32 +94,38 @@ def find_split(training_dataset):
 
     data = np.array(training_dataset)
     col_max_gains = []
+    col_max_midvals = []
 
     # split into cols
-    for i in range(len(data)-1):
+    for i in range(len(data[0]) - 1):
         current_col = data[:, i]
-        sorted_col = np.sort(current_col)
+        # sort column by indexes and then sort the labels
+        sorted_col = np.argsort(current_col)
+        label_col = data[sorted_col, -1]
         info_gains = []
         mid_val = []
-        for j in range(len(sorted_col-1)):
-            mid_val.append(np.median(sorted_col[j:j+2]))
-            g = gain(sorted_col, sorted_col[:j], sorted_col[j:])
+        # calculate information gain for each possible split
+        for j in range(len(sorted_col - 1)):
+            mid_val.append(np.median(current_col[sorted_col[j:j + 2]]))
+            g = gain(label_col, label_col[:j], label_col[j:])
             info_gains.append(g)
+        # find the max IG for each column
+        max_i = np.argmax(info_gains)
+        col_max_gains.append(info_gains[max_i])
+        col_max_midvals.append(mid_val[max_i])
 
+    # find split based on max IG from all columns
+    max_i = np.argmax(col_max_gains)
 
-    # sort
-
-    # calculate information gain
-
-    # split based on IG
-
-    pass
+    return max_i, col_max_midvals[max_i]
 
 
 # function to split the dataset
 def split_dataset(training_dataset, split):
-    # Implement your logic here
-    pass
+    left_branch = training_dataset[training_dataset[:, split[0]] < split[1]]
+    right_branch = training_dataset[training_dataset[:, split[0]] >= split[1]]
+
+    return left_branch, right_branch
 
 
 def confusion_matrix(true_labels, predicted_labels):
@@ -135,7 +133,8 @@ def confusion_matrix(true_labels, predicted_labels):
 
     # [ TP  FN  |  FP  TN ] ?
 
-    class_labels = np.unique(np.concatenate((true_labels, predicted_labels)), dtype=np.int)
+    class_labels = np.unique(np.concatenate((true_labels, predicted_labels)),
+                             dtype=np.int)
     confusion = np.zeros()
 
     for i in range(len(true_labels)):
@@ -153,8 +152,8 @@ def confusion_matrix(true_labels, predicted_labels):
 
 
 def accuracy(confusion):
-    # (TP + TN)/(TP + TN + FP + FN)
-    # HINT: you can derive the metrics directly from the previously computed confusion matrix
+    # (TP + TN)/(TP + TN + FP + FN) HINT: you can derive the metrics directly
+    # from the previously computed confusion matrix
 
     if np.sum(confusion) > 0:
         return np.trace(confusion) / np.sum(confusion)
@@ -165,7 +164,8 @@ def accuracy(confusion):
 def precision_rate(true_labels, predicted_labels):
     # (TP)/(TP + FP)
 
-    unique_class_labels = np.unique(np.concatenate(true_labels, predicted_labels))
+    unique_class_labels = np.unique(
+        np.concatenate(true_labels, predicted_labels))
     precision = np.zeros(len(unique_class_labels))
 
     for (c, label) in enumerate(unique_class_labels):
@@ -182,7 +182,8 @@ def recall_rate(true_labels, predicted_labels):
     # (TP)/(TP + FN)
     # recall rate per class using the eq
 
-    unique_class_labels = np.unique(np.concatenate(true_labels, predicted_labels))
+    unique_class_labels = np.unique(
+        np.concatenate(true_labels, predicted_labels))
     recall = np.zeros(len(unique_class_labels))
 
     for (c, label) in enumerate(unique_class_labels):
@@ -212,7 +213,7 @@ def f1_score(precisions, recalls):
         current_r = recalls[i]
 
         if (current_p + current_r) > 0.0:
-            f_one = (2*current_p*current_r)/(current_p + current_r)
+            f_one = (2 * current_p * current_r) / (current_p + current_r)
         else:
             f_one = 0.0
 
@@ -261,4 +262,14 @@ def f1_score(precisions, recalls):
 #
 #     return f
 
+# Loading the data from the text file
+data_clean = np.loadtxt('data/clean_dataset.txt')
+data_noisy = np.loadtxt('data/noisy_dataset.txt')
 
+# Printing the loaded data
+# print(data_clean)
+
+# For quick testing
+k_fold_split(10, 2000, default_rng())
+print(find_split(data_clean))
+print(split_dataset(data_clean, find_split(data_clean))[1])
