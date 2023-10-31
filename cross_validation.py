@@ -1,6 +1,9 @@
 import numpy as np
 from numpy.random import default_rng
 
+from evaluate import accuracy
+
+
 class KNNClassifier:
     def __init__(self, k=10):
         """ K-NN Classifier.
@@ -53,6 +56,7 @@ knn_classifier.fit(x_train, y_train)
 knn_predictions = knn_classifier.predict(x_test)
 print(knn_predictions)
 
+
 def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
     """ Split n_instances into n mutually exclusive splits at random.
 
@@ -73,6 +77,9 @@ def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
     split_indices = np.array_split(shuffled_indices, n_splits)
 
     return split_indices
+
+# For quick testing
+k_fold_split(10, 2000, rg)
 
 def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
     """ Generate train and test indices at each fold.
@@ -107,27 +114,31 @@ def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
 
 
 # to test your function (30 instances, 4 fold)
-for (train_indices, test_indices) in train_test_k_fold(4, 30, rg):
+for (train_indices, test_indices) in train_test_k_fold(10, 2000, rg):
     print("train: ", train_indices)
     print("test: ", test_indices)
     print()
 
-n_folds = 10
-accuracies = np.zeros((n_folds, ))
-for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
-    # get the dataset from the correct splits
-    x_train = x[train_indices, :]
-    y_train = y[train_indices]
-    x_test = x[test_indices, :]
-    y_test = y[test_indices]
 
-    # Train the KNN (we'll use one nearest neighbour)
-    knn_classifier = KNNClassifier(k=1)
-    knn_classifier.fit(x_train, y_train)
-    predictions = knn_classifier.predict(x_test)
-    acc = accuracy(y_test, predictions)
-    accuracies[i] = acc
+def retrain(n_folds=10, x, y):
+    accuracies = np.zeros((n_folds, ))
+    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
+        # get the dataset from the correct splits
+        x_train = x[train_indices, :]
+        y_train = y[train_indices]
+        x_test = x[test_indices, :]
+        y_test = y[test_indices]
 
-print(accuracies)
-print(accuracies.mean())
-print(accuracies.std())
+        # Train the KNN (we'll use one nearest neighbour)
+        knn_classifier = KNNClassifier(k=1)
+        knn_classifier.fit(x_train, y_train)
+        predictions = knn_classifier.predict(x_test)
+        acc = accuracy(y_test, predictions)
+        accuracies[i] = acc
+
+        return accuracies.mean()
+
+
+# print(accuracies)
+# print(accuracies.mean())
+# we don't need Standard Deviation - print(accuracies.std())
