@@ -2,9 +2,6 @@ import numpy as np
 from numpy.random._generator import default_rng
 
 
-
-
-
 def entropy(data_labels):
     if len(data_labels) == 0:
         return 0
