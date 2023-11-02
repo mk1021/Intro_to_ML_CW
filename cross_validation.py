@@ -63,7 +63,7 @@ for (train_indices, test_indices) in train_test_k_fold(10, 2000, rg):
     print()
 
 
-def decision_tree_predict(current_node, x):
+def decision_tree_predict(current_node, x, training_dataset):
     # Check if the current node is a leaf node
     trained_dataset = decision_tree_learning(training_dataset, depth)
     current_node = trained_dataset
@@ -114,13 +114,15 @@ def decision_tree_predict(current_node, x):
 def retrain(n_folds=10, training_dataset):
 
     accuracies = np.zeros((n_folds, ))
-    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
+    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(training_dataset), rg)):
         # get the dataset from the correct splits
-        train = training_dataset[train_indices, :]
-        test = training_dataset[test_indices, :]
+        train_data = training_dataset[train_indices, :]
+        train_labels = training_dataset[train_indices]
+        test_data = training_dataset[test_indices, :]
+        test_labels = training_dataset[test_indices]
 
         # DECISION TREE PREDICT
-        classifier = decision_tree_learning(train, depth=1)
+        classifier = decision_tree_learning(np.stack(train_data, train_labels), depth=1)
 
         # Initialize a list to store predictions
         predictions = []
