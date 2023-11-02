@@ -59,7 +59,7 @@ def recall_rate(confusion):
     recall = []
     for i in range(len(confusion)):
         tp = confusion[i, i]
-        row_sum = np.sum(confusion[, i:])
+        row_sum = np.sum(confusion[i, :])
         recall.append(tp / row_sum)
 
     return np.array(recall)
@@ -73,7 +73,6 @@ def f1_score(precisions, recalls):
 
     assert len(precisions) == len(recalls)
 
-    f1 = np.zeros(len(precisions), )
     f1 = np.divide(2 * np.multiply(precisions, recalls), precisions + recalls)
 
     return f1
