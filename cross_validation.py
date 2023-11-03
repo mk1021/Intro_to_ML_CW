@@ -29,7 +29,7 @@ def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
     return split_indices
 
 # For quick testing
-k_fold_split(10, 2000, rg)
+# k_fold_split(10, 2000, rg)
 
 def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
     """ Generate train and test indices at each fold.

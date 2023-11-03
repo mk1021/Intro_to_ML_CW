@@ -104,7 +104,7 @@ def decision_tree_learning(training_dataset, depth):
 
         return node, max(l_depth, r_depth)
 
-#
+
 def predict(tree, x):
     predictions = []
     for instance in x:
