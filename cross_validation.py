@@ -4,6 +4,7 @@ from numpy.random import default_rng
 from evaluate import accuracy
 from decision_tree import predict
 from decision_tree import data_clean
+from decision_tree import decision_tree_learning
 
 
 def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
@@ -51,6 +52,8 @@ def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
     for k in range(n_folds):
         # pick k as test
         test_indices = split_indices[k]
+        
+        # combine remaining splits as train
         train_indices = np.hstack(split_indices[:k] + split_indices[k+1:])
         folds.append([train_indices, test_indices])
 
@@ -63,6 +66,11 @@ for (train_indices, test_indices) in train_test_k_fold(10, 2000, rg):
     print("test: ", test_indices)
     print()
 
+
+# Sort-of Main for Testing -------------------------------------------------------------------------
+
+# initial stuff
+rg = default_rng(60012)
 
 # Separate data_clean into data and labels
 data = data_clean[:, :-1]
@@ -83,7 +91,8 @@ for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len
     predictions = []
 
     # Iterate through the test instances and make predictions directly
-    predictions = predict(test_data)
+    decision_tree = decision_tree_learning(np.stack(train_data, train_labels), 0)[0]
+    predictions = predict(decision_tree, test_data)
     accuracies[i] = accuracy(test_labels, predictions)
 
 # print out the mean accuracy to find the best model?
