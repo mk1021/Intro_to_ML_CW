@@ -40,10 +40,9 @@ def main(filename):
 
     # Cross-validation
     avg_confusion = cross_validation(data)
-    print(avg_confusion)
 
     # Evaluation Metrics
     print(evaluate(avg_confusion))
 
 
-main('clean_dataset')
+main('noisy_dataset')
