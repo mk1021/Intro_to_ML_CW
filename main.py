@@ -44,5 +44,4 @@ def main(filename):
     # Evaluation Metrics
     print(evaluate(avg_confusion))
 
-
 main('noisy_dataset')
