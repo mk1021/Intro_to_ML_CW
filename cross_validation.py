@@ -1,10 +1,10 @@
 import numpy as np
 from numpy.random import default_rng
 
-from evaluate import accuracy
-from decision_tree import predict
-from decision_tree import data_clean
-from decision_tree import decision_tree_learning
+# from evaluate import accuracy
+# from decision_tree import predict
+# from decision_tree import data_clean
+# from decision_tree import decision_tree_learning
 
 
 def k_fold_split(n_splits, n_instances, random_generator=default_rng()):

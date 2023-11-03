@@ -113,17 +113,17 @@ def evaluate(true_labels, predicted_labels):
     print(f"Macro-averaged F1 Score: {macro_f1}")
 
 
-data_clean = np.loadtxt('data/noisy_dataset.txt')
-
-test_total = round(len(data_clean) * 0.2)
-rg = default_rng(60012)
-rand_indexes = rg.permutation(len(data_clean))
-test = data_clean[rand_indexes[:test_total]]
-train = data_clean[rand_indexes[test_total:]]
-
-decision_tree = decision_tree_learning(train, 0)[0]
-max_depth = decision_tree_learning(train, 0)[1]
-y_prediction = predict(decision_tree, test[:, :-1])
-y_gold = test[:, -1]
-
-print(evaluate(y_gold, y_prediction))
+# data_clean = np.loadtxt('data/noisy_dataset.txt')
+#
+# test_total = round(len(data_clean) * 0.2)
+# rg = default_rng(60012)
+# rand_indexes = rg.permutation(len(data_clean))
+# test = data_clean[rand_indexes[:test_total]]
+# train = data_clean[rand_indexes[test_total:]]
+#
+# decision_tree = decision_tree_learning(train, 0)[0]
+# max_depth = decision_tree_learning(train, 0)[1]
+# y_prediction = predict(decision_tree, test[:, :-1])
+# y_gold = test[:, -1]
+#
+# print(evaluate(y_gold, y_prediction))

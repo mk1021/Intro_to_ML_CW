@@ -74,8 +74,6 @@ def find_split(data):
 def split_dataset(training_dataset, split):
     left_branch = training_dataset[training_dataset[:, split[0]] < split[1]]
     right_branch = training_dataset[training_dataset[:, split[0]] >= split[1]]
-    print(split[1])
-
     return left_branch, right_branch
 
 
@@ -93,9 +91,6 @@ def decision_tree_learning(training_dataset, depth):
 
         # Splitting the dataset
         l_dataset, r_dataset = split_dataset(training_dataset, split)
-
-        print("left: " + str(len(l_dataset)))
-        print("right: " + str(len(r_dataset)))
 
         # Recursive call for the left branch
         l_branch, l_depth = decision_tree_learning(l_dataset, depth + 1)
@@ -115,8 +110,6 @@ def predict(tree, x):
     for instance in x:
         branch = tree
         while 'leaf' not in branch:
-            # print(branch)
-            # print()
             attribute, split_value = branch['split']
             if instance[attribute] < split_value:
                 branch = branch['left']
