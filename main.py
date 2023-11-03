@@ -43,7 +43,7 @@ def main(filename):
     print(avg_confusion)
 
     # Evaluation Metrics
-    # print(evaluate(avg_confusion))
+    print(evaluate(avg_confusion))
 
 
 main('clean_dataset')
