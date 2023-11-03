@@ -37,8 +37,11 @@ def accuracy(confusion):
     # (TP + TN)/(TP + TN + FP + FN) HINT: you can derive the metrics directly
     # from the previously computed confusion matrix
 
+    accuracies = []
     if np.sum(confusion) > 0:
-        return np.trace(confusion) / np.sum(confusion)
+        for i in range(len(confusion)):
+            accuracies.append(np.trace(confusion) / np.sum(confusion))
+        return accuracies.mean(), accuracies.std()
     else:
         return 0
 
