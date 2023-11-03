@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from numpy.random._generator import default_rng
+from plotting import generate_tree
 
 
 def entropy(data_labels):
@@ -114,8 +115,8 @@ def predict(tree, x):
     for instance in x:
         branch = tree
         while 'leaf' not in branch:
-            print(branch)
-            print()
+            # print(branch)
+            # print()
             attribute, split_value = branch['split']
             if instance[attribute] < split_value:
                 branch = branch['left']
@@ -147,15 +148,18 @@ data_noisy = np.loadtxt('data/noisy_dataset.txt')
 # # Call the decision tree plot function
 test_total = round(len(data_clean) * 0.2)
 rg = default_rng(60012)
-rand_indexes = rg.permutation(len(data_clean))
+rand_indexes = rg.permutation(len(data_noisy))
 test = data_clean[rand_indexes[:test_total]]
 train = data_clean[rand_indexes[test_total:]]
 
 decision_tree = decision_tree_learning(train, 0)[0]
+maxdepth = decision_tree_learning(train, 0)[1]
 y_prediction = predict(decision_tree, test[:, :-1])
 y_gold = test[:, -1]
 
+print(decision_tree)
 print(np.sum(y_gold == y_prediction) / len(y_gold))
-# plot_decision_boundaries(decision_tree, data_clean, max_depth=2)
+
+generate_tree(decision_tree, maxdepth, "tree.png")
 
 plt.show()
