@@ -1,11 +1,6 @@
 import numpy as np
 from numpy.random import default_rng
 
-# from evaluate import accuracy
-# from decision_tree import predict
-# from decision_tree import data_clean
-# from decision_tree import decision_tree_learning
-
 
 def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
     """ Split n_instances into n mutually exclusive splits at random.
@@ -28,8 +23,6 @@ def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
 
     return split_indices
 
-# For quick testing
-# k_fold_split(10, 2000, rg)
 
 def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
     """ Generate train and test indices at each fold.

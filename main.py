@@ -9,6 +9,17 @@ from evaluate import evaluate, confusion_matrix, accuracy
 
 
 def cross_validation(dataset):
+    """
+        Perform 10-fold cross-validation on the given dataset to evaluate a decision tree classifier.
+
+        Args:
+            dataset (numpy.ndarray): The dataset with features and labels.
+
+        Returns:
+            confusion (np.array): shape (C, C), where C is the number of
+            classes. Rows are ground truth per class, columns are predictions
+    """
+
     # Computing the prediction for each fold
     n_folds = 10
     fold_confusions = []

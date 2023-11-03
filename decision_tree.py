@@ -1,14 +1,10 @@
 import numpy as np
-from matplotlib import pyplot as plt
-from numpy.random._generator import default_rng
-from plotting import generate_tree
 
 
 def entropy(data_labels):
     if len(data_labels) == 0:
         return 0
     else:
-
         unique_labels, label_counts = np.unique(data_labels,
                                                 return_counts=True)
 
@@ -31,6 +27,7 @@ def remainder(left_data_labels, right_data_labels):
 
 
 def gain(all_data_labels, left_data_labels, right_data_labels):
+
     h_all = entropy(all_data_labels)
     r = remainder(left_data_labels, right_data_labels)
     return h_all - r
@@ -38,7 +35,15 @@ def gain(all_data_labels, left_data_labels, right_data_labels):
 
 # function to find the split value
 def find_split(data):
-    # chooses attribute and value that results in the highest information gain
+    """
+        Find the attribute and value that result in the highest information gain for splitting the dataset.
+
+        Args:
+            data (numpy.ndarray): The dataset with features and labels.
+
+        Returns:
+            tuple: A tuple containing the index of the chosen attribute and the split value.
+    """
 
     col_max_gains = []
     col_max_midvals = []
@@ -70,14 +75,35 @@ def find_split(data):
     return max_i, col_max_midvals[max_i]
 
 
-# function to split the dataset
 def split_dataset(training_dataset, split):
+    """
+        Split the training dataset into left and right branches based on the specified split condition.
+
+        Args:
+            training_dataset (numpy.ndarray): The training dataset with features and labels.
+            split (tuple): A tuple containing the split attribute index and the split value.
+
+        Returns:
+            tuple: A tuple containing the left branch and right branch of the dataset.
+    """
+
     left_branch = training_dataset[training_dataset[:, split[0]] < split[1]]
     right_branch = training_dataset[training_dataset[:, split[0]] >= split[1]]
     return left_branch, right_branch
 
 
 def decision_tree_learning(training_dataset, depth):
+    """
+        Recursively build a decision tree based on the input training dataset.
+
+        Args:
+            training_dataset (numpy.ndarray): The training dataset with features and labels.
+            depth (int): The current depth of the decision tree.
+
+        Returns:
+            tuple: A tuple containing a dictionary representing the decision tree node and the maximum depth.
+    """
+
     if len(set(training_dataset[:, -1])) == 1:
         # Checking if all samples have the same label
         node = {'leaf': training_dataset[0, -1]}
@@ -106,6 +132,17 @@ def decision_tree_learning(training_dataset, depth):
 
 
 def predict(tree, x):
+    """
+        Predict target values for a given set of instances using a decision tree.
+
+        Args:
+            tree (dict): The decision tree model used for prediction.
+            x (numpy.ndarray): An array containing the instances to predict.
+
+        Returns:
+            numpy.ndarray: An array of predicted target values for the input instances.
+    """
+
     predictions = []
     for instance in x:
         branch = tree
