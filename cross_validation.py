@@ -60,42 +60,31 @@ def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
     return folds
 
 
-# To test your function (2000 instances, 10 fold)
-for (train_indices, test_indices) in train_test_k_fold(10, 2000, rg):
-    print("train: ", train_indices)
-    print("test: ", test_indices)
-    print()
+def cross_validation(data_clean):
+    n_folds = 10
 
+    # Separate data_clean into data and labels
+    data = data_clean[:, :-1]
+    labels = data_clean[-1]
 
-# Sort-of Main for Testing -------------------------------------------------------------------------
+    # Computing the accuracy for each fold
+    n_folds = 10
+    accuracies = np.zeros((n_folds,))
+    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(data), rg)):
+        # Get the dataset from the correct splits
+        train_data = data[train_indices, :]
+        train_labels = labels[train_indices]
+        test_data = data[test_indices, :]
+        test_labels = labels[test_indices]
 
-# initial stuff
-rg = default_rng(60012)
+        # Initialize a list to store predictions
+        predictions = []
 
-# Separate data_clean into data and labels
-data = data_clean[:, :-1]
-labels = data_clean[-1]
+        # Iterate through the test instances and make predictions directly
+        decision_tree = decision_tree_learning(np.stack(train_data, train_labels), 0)[0]
+        predictions = predict(decision_tree, test_data)
+        accuracies[i] = accuracy(test_labels, predictions)
 
-# Computing the accuracy for each fold
-n_folds = 10
-accuracies = np.zeros((n_folds, ))
-for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(data), rg)):
-
-    # Get the dataset from the correct splits
-    train_data = data[train_indices, :]
-    train_labels = labels[train_indices]
-    test_data = data[test_indices, :]
-    test_labels = labels[test_indices]
-
-    # Initialize a list to store predictions
-    predictions = []
-
-    # Iterate through the test instances and make predictions directly
-    decision_tree = decision_tree_learning(np.stack(train_data, train_labels), 0)[0]
-    predictions = predict(decision_tree, test_data)
-    accuracies[i] = accuracy(test_labels, predictions)
-
-# print out the mean accuracy to find the best model?
-print(accuracies)
-print(accuracies.mean())
-print(accuracies.std())
+    print(accuracies)
+    print(accuracies.mean())
+    print(accuracies.std())
