@@ -86,14 +86,13 @@ def f1_score(precisions, recalls):
     return f1, macro_f
 
 
-def evaluate(true_labels, predicted_labels):
-    confusion = confusion_matrix(true_labels, predicted_labels)
-    acc = accuracy(confusion)
-    class_precisions, macro_precision = precision_rate(confusion)
-    class_recalls, macro_recall = recall_rate(confusion)
+def evaluate(average_confusion):
+    acc = accuracy(average_confusion)
+    class_precisions, macro_precision = precision_rate(average_confusion)
+    class_recalls, macro_recall = recall_rate(average_confusion)
     f1_scores, macro_f1 = f1_score(class_precisions, class_recalls)
 
-    print(f"Confusion Matrix: \n {confusion}")
+    print(f"Confusion Matrix: \n {average_confusion}")
     print()
     print(f"Accuracy: {acc}")
     print()
