@@ -59,32 +59,3 @@ def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
 
     return folds
 
-
-def cross_validation(data_clean):
-    n_folds = 10
-
-    # Separate data_clean into data and labels
-    data = data_clean[:, :-1]
-    labels = data_clean[-1]
-
-    # Computing the accuracy for each fold
-    n_folds = 10
-    accuracies = np.zeros((n_folds,))
-    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(data), rg)):
-        # Get the dataset from the correct splits
-        train_data = data[train_indices, :]
-        train_labels = labels[train_indices]
-        test_data = data[test_indices, :]
-        test_labels = labels[test_indices]
-
-        # Initialize a list to store predictions
-        predictions = []
-
-        # Iterate through the test instances and make predictions directly
-        decision_tree = decision_tree_learning(np.stack(train_data, train_labels), 0)[0]
-        predictions = predict(decision_tree, test_data)
-        accuracies[i] = accuracy(test_labels, predictions)
-
-    print(accuracies)
-    print(accuracies.mean())
-    print(accuracies.std())
