@@ -36,7 +36,7 @@ def main(filename):
     total_decision_tree, max_depth = decision_tree_learning(data, 0)
 
     # Print tree
-    generate_tree(total_decision_tree, max_depth, f"images/{filename}.png")
+    # generate_tree(total_decision_tree, max_depth, f"images/{filename}.png")
 
     # Cross-validation
     avg_confusion = cross_validation(data)

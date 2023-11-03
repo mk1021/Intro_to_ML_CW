@@ -1,12 +1,17 @@
 import numpy as np
-from numpy.random import default_rng
-
-from decision_tree import decision_tree_learning, predict
 
 
 def confusion_matrix(true_labels, predicted_labels):
-    # returns a 4x4 matrix
-    # [ TP  FN  |  FP  TN ] ?
+    """ Compute the confusion matrix
+
+        Args:
+            true_labels (np.ndarray): the correct ground truth/gold standard labels
+            predicted_labels (np.ndarray): the predicted labels
+
+        Returns:
+            confusion (np.array) : shape (C, C), where C is the number of classes.
+                       Rows are ground truth per class, columns are predictions
+        """
 
     # Define class labels
     class_labels = np.unique(np.concatenate((true_labels, predicted_labels)))
@@ -34,8 +39,15 @@ def confusion_matrix(true_labels, predicted_labels):
 
 
 def accuracy(confusion):
-    # (TP + TN)/(TP + TN + FP + FN) HINT: you can derive the metrics directly
-    # from the previously computed confusion matrix
+    """ Compute the accuracy given the ground truth and predictions
+
+        Args:
+            confusion (np.array) = shape (C, C), where C is the number of
+            classes. Rows are ground truth per class, columns are predictions
+
+        Returns:
+            float : the accuracy
+        """
 
     if np.sum(confusion) > 0:
         return np.trace(confusion) / np.sum(confusion)
@@ -44,7 +56,21 @@ def accuracy(confusion):
 
 
 def precision_rate(confusion):
-    # (TP)/(TP + FP)
+    """ Compute the precision score per class given the ground truth and
+        predictions
+
+        Also return the macro-averaged precision across classes.
+
+        Args:
+            confusion (np.array) = shape (C, C), where C is the number of
+            classes. Rows are ground truth per class, columns are predictions
+
+        Returns:
+            tuple: returns a tuple (precisions, macro_precision) where
+            - precisions is a np.array of shape (C,), where each element is
+              the precision for class c
+            - macro-precision is macro-averaged precision (a float)
+    """
 
     precisions = []
     for i in range(len(confusion)):
@@ -58,7 +84,21 @@ def precision_rate(confusion):
 
 
 def recall_rate(confusion):
-    # (TP)/(TP + FN))
+    """ Compute the recall score per class given the ground truth and
+        predictions
+
+        Also return the macro-averaged recall across classes.
+
+        Args:
+            confusion (np.array) = shape (C, C), where C is the number of
+            classes. Rows are ground truth per class, columns are predictions
+
+        Returns:
+            tuple: returns a tuple (recalls, macro_recall) where
+                - recalls is a np.array of shape (C,), where each element is
+                  the recall for class c
+                - macro-recall is macro-averaged recall (a float)
+    """
 
     recalls = []
     for i in range(len(confusion)):
@@ -72,10 +112,20 @@ def recall_rate(confusion):
 
 
 def f1_score(precisions, recalls):
-    # 2(precision)(recall)/(precision + recall)
+    """ Compute the F1-score per class given the ground truth and predictions
 
-    # precisions = precision_rate(true_labels, predicted_labels)
-    # recalls = recall_rate(true_labels, predicted_labels)
+        Also return the macro-averaged F1-score across classes.
+
+        Args:
+            precisions (np.array): precision score per class
+            recalls (np.array): recall score per class
+
+        Returns:
+            tuple: returns a tuple (f1s, macro_f1) where
+                - f1s is a np.ndarray of shape (C,), where each element is the
+                  f1-score for class c
+                - macro-f1 is macro-averaged f1-score (a float)
+        """
 
     assert len(precisions) == len(recalls)
 
@@ -111,18 +161,3 @@ def evaluate(average_confusion):
         print(f"\tClass {i}: {f1_scores[i]}")
     print(f"Macro-averaged F1 Score: {macro_f1}")
 
-
-# data_clean = np.loadtxt('data/noisy_dataset.txt')
-#
-# test_total = round(len(data_clean) * 0.2)
-# rg = default_rng(60012)
-# rand_indexes = rg.permutation(len(data_clean))
-# test = data_clean[rand_indexes[:test_total]]
-# train = data_clean[rand_indexes[test_total:]]
-#
-# decision_tree = decision_tree_learning(train, 0)[0]
-# max_depth = decision_tree_learning(train, 0)[1]
-# y_prediction = predict(decision_tree, test[:, :-1])
-# y_gold = test[:, -1]
-#
-# print(evaluate(y_gold, y_prediction))
